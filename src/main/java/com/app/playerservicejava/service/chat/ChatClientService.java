@@ -59,23 +59,20 @@ public class ChatClientService {
         if (playerDetails.isEmpty()) {
             throw new IllegalStateException("No valid player data available for prompt generation.");
         }
-        String systemPrompt = "You are an expert in selecting the most qualified players for upcoming tournaments. " +
-                "Consider player demographics and match statistics to provide the best recommendations. " +
-                "Players: " + playerDetails + "\n" +
-                "Please return a list of qualified players in the following JSON format:" +
-                "[ { 'name': 'Player Name', 'qualification': 'Qualification Details', 'reason': 'Reason for Qualification' }, ... ]" +
-                "Do not include any additional text, just return the JSON array.";
+
 
 
 
         PromptBuilder promptBuilder = new PromptBuilder()
-                .addLine(systemPrompt);  // System prompt alone is enough to guide the filtering
-
+                .addLine("You are an expert in selecting the most qualified players for upcoming tournaments. ").addSeparator()
+                .addLine("Consider player demographics and match statistics to provide the best recommendations.").addSeparator()
+                .addLine("Please give me just the list of players from the given below data "+playerDetails).addSeparator()
+                .addLine("Analyse the data and return a proper structured reasoning for the exact players who are being selected");
 
         // Call AI service with SYSTEM and USER prompts
         OllamaResult response = ollamaAPI.generate(
                 OllamaModelType.TINYLLAMA,
-                promptBuilder.build(),false,
+                promptBuilder.build(), false,
                 new OptionsBuilder().build()
         );
 
@@ -84,8 +81,10 @@ public class ChatClientService {
             throw new IllegalStateException("AI service returned an invalid or empty response.");
         }
 
+        // Return the response, which should be the JSON array of recommended players
         return response.getResponse();
     }
+
 
     public String chat() throws OllamaBaseException, IOException, InterruptedException {
         String model = OllamaModelType.TINYLLAMA;

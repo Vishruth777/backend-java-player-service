@@ -46,7 +46,7 @@ public class ChatController {
             return ResponseEntity.ok(responseEntity);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to generate nickname: " + e.getMessage()));
+                    .body(Map.of("error", "Failed to generate list of players: " + e.getMessage()));
         }
     }
 }
