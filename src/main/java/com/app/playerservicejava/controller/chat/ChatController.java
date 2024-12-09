@@ -6,6 +6,7 @@ import io.github.ollama4j.models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "v1/chat", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -36,5 +38,15 @@ public class ChatController {
     public ResponseEntity<List<Model>> listModels() throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {
         List<Model> models = chatClientService.listModels();
         return ResponseEntity.ok(models);
+    }
+    @PostMapping("/selectedPlayers")
+    public Object selectedPlayers() {
+        try {
+            String responseEntity= chatClientService.generateSelectedPlayersForTournaments();
+            return ResponseEntity.ok(responseEntity);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to generate nickname: " + e.getMessage()));
+        }
     }
 }
