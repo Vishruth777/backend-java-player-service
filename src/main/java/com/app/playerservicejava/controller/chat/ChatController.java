@@ -29,6 +29,7 @@ public class ChatController {
 
     @PostMapping
     public @ResponseBody String chat() throws OllamaBaseException, IOException, InterruptedException {
+        
         return chatClientService.chat();
     }
 
