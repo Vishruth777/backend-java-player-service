@@ -59,11 +59,14 @@ public class ChatClientService {
         if (playerDetails.isEmpty()) {
             throw new IllegalStateException("No valid player data available for prompt generation.");
         }
-
         String systemPrompt = "You are an expert in selecting the most qualified players for upcoming tournaments. " +
                 "Consider player demographics and match statistics to provide the best recommendations. " +
                 "Players: " + playerDetails + "\n" +
-                "As an ai just return me a list of players who are qualified according to you make it structured text...Note(dont add code or sql queries you tell me the output)";
+                "Please return a list of qualified players in the following JSON format:" +
+                "[ { 'name': 'Player Name', 'qualification': 'Qualification Details', 'reason': 'Reason for Qualification' }, ... ]" +
+                "Do not include any additional text, just return the JSON array.";
+
+
 
         PromptBuilder promptBuilder = new PromptBuilder()
                 .addLine(systemPrompt);  // System prompt alone is enough to guide the filtering
